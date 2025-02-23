@@ -11,7 +11,6 @@
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     class={className}
-    {...$$restProps}
   >
     <line y1="1" x2="35" y2="1" stroke="#4547BB" stroke-width="2" />
     <line y1="7" x2="35" y2="7" stroke="#4547BB" stroke-width="2" />

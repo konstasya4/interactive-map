@@ -1,4 +1,5 @@
 <script>
+    import { createEventDispatcher } from "svelte";
     import { onMount } from 'svelte';
     import Plyr from 'plyr';
     import 'plyr/dist/plyr.css';
@@ -8,6 +9,7 @@
   
     let playerContainer; 
     let player;
+    const dispatch = createEventDispatcher();
 
     $: embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&enablejsapi=1&origin=${location.origin}`;
 
@@ -22,6 +24,10 @@
         autoplay: true
       }); 
     });
+
+    function handleClick(){
+      dispatch('close');
+    }
   </script>
   <div class="video" bind:this={playerContainer}>
 
@@ -36,7 +42,7 @@
       <Map />
     </div>
   
-    <button class="video__button">Другие видео<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="#FFFFFF" d="m12 10.108l-4.246 4.246q-.14.14-.344.15t-.364-.15t-.16-.354t.16-.354l4.389-4.388q.242-.242.565-.242t.566.242l4.388 4.388q.14.14.15.345q.01.203-.15.363t-.354.16t-.354-.16z"></path></svg></button>
+    <button class="video__button" onclick={handleClick}>Другие видео<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="#FFFFFF" d="m12 10.108l-4.246 4.246q-.14.14-.344.15t-.364-.15t-.16-.354t.16-.354l4.389-4.388q.242-.242.565-.242t.566.242l4.388 4.388q.14.14.15.345q.01.203-.15.363t-.354.16t-.354-.16z"></path></svg></button>
   </div>
   
   <style>
@@ -55,7 +61,7 @@
     }
 
     .video__mini-map {
-      position: absolute;
+    position: absolute;
     bottom: 3vw;
     left: 20px;
     pointer-events: none; 

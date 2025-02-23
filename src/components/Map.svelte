@@ -1,8 +1,8 @@
 <script>
-  import { setContext, createEventDispatcher  } from "svelte";
+  import { setContext, createEventDispatcher } from "svelte";
   import { mapboxgl, key } from "./mapboxgl.js";
   import geoData from "../assets/data/line.geojson";
-  
+
   let map;
   let isBottomPanelVisible = $state(false);
   const dispatch = createEventDispatcher();
@@ -18,19 +18,10 @@
     fetch(geoData)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Parsed geoData:", data);
-        if (data.features && data.features.length > 0) {
-          const firstFeature = data.features[0];
-          if (
-            firstFeature.geometry?.type === "LineString" &&
-            Array.isArray(firstFeature.geometry.coordinates) &&
-            firstFeature.geometry.coordinates.length > 0
-          ) {
-            const initialCenter = firstFeature.geometry.coordinates[0];
-            map.setCenter(initialCenter);
-            map.setZoom(11);
-          }
-        }
+        const firstFeature = data.features[0];
+        const initialCenter = firstFeature.geometry.coordinates[0];
+        map.setCenter(initialCenter);
+        map.setZoom(11);
       })
       .catch((err) => console.error("Ошибка загрузки geoData:", err));
 
@@ -41,12 +32,12 @@
       center: initialCenter,
       zoom: initialZoom,
     });
-    map.addControl(new mapboxgl.NavigationControl(
-      {
-    showZoom: false, 
-    showCompass: false, 
-  }
-    ));
+    map.addControl(
+      new mapboxgl.NavigationControl({
+        showZoom: false,
+        showCompass: false,
+      })
+    );
     map.scrollZoom.disable();
 
     map.on("idle", () => {
@@ -88,17 +79,19 @@
           "line-offset": -3,
         },
       });
-
-      map.on("click", "rail-highspeed", (e) => {
-        console.log("rail-highspeed layer clicked");
-          isBottomPanelVisible = true;
-          dispatch('bottomPanelVisible', { isBottomPanelVisible })
-        });
+      map.on("click", (e) => {
+        isBottomPanelVisible = false;
+        dispatch("bottomPanelVisible", { isBottomPanelVisible });
       });
-    }
+      map.on("click", "rail-highspeed", (e) => {
+        isBottomPanelVisible = true;
+        dispatch("bottomPanelVisible", { isBottomPanelVisible });
+      });
+    });
+  }
 </script>
 
-<div class='map' use:initMap></div>
+<div class="map" use:initMap></div>
 
 <style>
   @import "mapbox-gl/dist/mapbox-gl.css";
